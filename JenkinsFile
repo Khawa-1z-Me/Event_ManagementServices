@@ -1,0 +1,57 @@
+pipeline {
+  agent any
+
+  environment {
+    IMAGE_NAME = "yourdockerhubuser/event-ms-laravel"
+    IMAGE_TAG  = "${BUILD_NUMBER}"
+    FULL_IMAGE = "${IMAGE_NAME}:${IMAGE_TAG}"
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        git url: 'https://github.com/Khawa-1z-Me/Event_ManagementServices.git', branch: 'main'
+      }
+    }
+
+    stage('Install & Test') {
+      steps {
+        sh 'composer install --no-interaction --no-progress'
+        sh 'php artisan test'
+      }
+    }
+
+    stage('Build Image') {
+      steps {
+        script {
+          docker.build(FULL_IMAGE)
+        }
+      }
+    }
+
+    stage('Push to Registry') {
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'dockerhub-cred',
+                                         usernameVariable: 'DOCKER_USER',
+                                         passwordVariable: 'DOCKER_PASS')]) {
+          sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+          sh "docker push ${FULL_IMAGE}"
+        }
+      }
+    }
+
+    stage('Deploy to Docker Desktop') {
+      steps {
+        sh "docker stop event-ms-laravel|| true"
+        sh "docker rm event-ms-laravel || true"
+        sh "docker run -d --name event-ms-laravel -p 8000:80 ${FULL_IMAGE}"
+      }
+    }
+  }
+
+  post {
+    always {
+      cleanWs()
+    }
+  }
+}
