@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+    environment:
+      - APP_ENV=local
+      - DB_HOST=127.0.0.1
+      - DB_DATABASE=eparty2
+      - DB_USERNAME=root
+      - DB_PASSWORD=
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: eparty2
+      MYSQL_USER: root
+      MYSQL_PASSWORD: null
+    volumes:
+      - laravel_db_data:/var/lib/mysql
+
+volumes:
+  laravel_db_data:
