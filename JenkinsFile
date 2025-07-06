@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   environment {
-    IMAGE_NAME = "yourdockerhubuser/event-ms-laravel"
+    IMAGE_NAME = "khawa1zme/event_ms-app"
     IMAGE_TAG  = "${BUILD_NUMBER}"
     FULL_IMAGE = "${IMAGE_NAME}:${IMAGE_TAG}"
   }
