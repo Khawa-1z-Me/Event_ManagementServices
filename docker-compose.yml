@@ -1,34 +1,30 @@
-#version: '3.8'
 
 services:
-  app:
+  app: 
     build: .
     ports:
-      - "8000:80"                  # Host 8000 → Container 80 (Apache)
+      - "8182:80"                  # Host 8000 → Container 80 (Apache)
     volumes:
-      - ./:/var/www/html/public:rw
-      - ./vhost.conf:/etc/apache2/sites-enabled/000-default.conf:ro          # Your Laravel code in the container
-    environment:
-      APP_ENV: local
-      APP_DEBUG: 'true'
-      APP_URL: http://localhost:8000'
-
-      DB_CONNECTION: mysql
-      DB_HOST: db                  # ← Point at the MySQL service
-      DB_PORT: 3306
-      DB_DATABASE: eparty2
-      DB_USERNAME: root
-      DB_PASSWORD: ''              # Empty root password
+      - ./:/var/www/html
 
   db:
-    image: mysql:5.7
-    ports:
-      - "3307:3306"                # Expose MySQL on localhost:3306
+    image: mysql
+    restart: always
+ #   ports:
+ #     - "3307:3306"             # Expose MySQL on localhost:3306
     environment:
       MYSQL_DATABASE: eparty2
       MYSQL_ROOT_PASSWORD: ''      # Empty root password
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'  # Allow empty root password
     volumes:
-      - mysql_data:/var/lib/mysql
+      - ./database:/docker-entrypoint-initdb.d
 
-volumes:
-  mysql_data:
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "3308:80"            # host 8080 → container 80
+    environment:
+      PMA_HOST: db           # service name of MySQL container
+      PMA_PORT: 3306
+      PMA_ALLOW_NO_PASSWORD: 'yes'
