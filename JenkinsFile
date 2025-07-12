@@ -2,9 +2,9 @@ pipeline {
   agent any
 
     stages {
-        stage('Build') {
+        stage('Starting Build') {
             steps {
-                echo 'DevOps build....'
+                echo 'Build running....'
             }
         }
         stage('Clean Workspace') {
@@ -16,14 +16,14 @@ pipeline {
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Khawa-1z-Me/Event_ManagementServices.git']])
             }
         }
-        stage('Build Project Image Locally'){
+        stage('Build Project Image to Local Machine'){
             steps {
                 script{
                     bat "docker build -t projsoftapp ." // -> Build image locally in docker desktop
                 }
             }
         }
-        stage('Push Image to Docker Hub') {
+        stage('Push Image to Docker Hub Website') {
           steps {
             script {
               // build or reference image
