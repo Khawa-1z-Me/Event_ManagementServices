@@ -39,7 +39,7 @@ pipeline {
     post{
         success{
             jiraIssueSelector(issueSelector: [$class: 'ExplicitIssueSelector', issueKeys: 'EMSS-22']) // Select issue in Jira
-            jiraComment body: 'Task Transitioned', issueKey: 'EMSS-23' // Add comment to the issue in Jira
+            jiraComment body: 'Task Transition to In Progress', issueKey: 'EMSS-22' // Add comment to the issue in Jira
         }
     }
 }

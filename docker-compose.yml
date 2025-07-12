@@ -1,7 +1,7 @@
 
 services:
   app: 
-    build: .
+    image: khawa1zme/projsoftapp:latest
     ports:
       - "8182:80"                  # Host 8000 → Container 80 (Apache)
     volumes:
